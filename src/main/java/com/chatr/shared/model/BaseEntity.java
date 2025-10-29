@@ -7,8 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Getter @Setter
+@MappedSuperclass
 public abstract class BaseEntity {
 
     @Id

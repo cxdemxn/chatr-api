@@ -1,15 +1,27 @@
 package com.chatr.auth.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.auth.service.AuthService;
+import com.chatr.user.dto.UserDto;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @GetMapping("/login")
-    private String login() {
-        return "Login page";
+    private AuthService authService;
+
+    @PostMapping("/register")
+    private ResponseEntity<UserDto> register(@RequestBody AuthRequestDto registerRequest) {
+        UserDto savedUser = authService.register(registerRequest);
+
+        URI createdResource = URI.create("/api/users/" + savedUser.id());
+
+        return ResponseEntity.created(createdResource).body(savedUser);
     }
 }

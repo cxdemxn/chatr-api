@@ -3,6 +3,7 @@ package com.chatr.shared.exceptions.handler;
 import com.chatr.shared.exceptions.BaseException;
 import com.chatr.shared.exceptions.ErrorResponse;
 import com.chatr.shared.exceptions.UserAlreadyExistsException;
+import com.chatr.shared.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    private ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException exception, WebRequest request) {
+    private ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
         logger.warn("User registration conflict: {}", exception.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode(), exception.getMessage());
+        setRequestDetails(errorResponse, request);
+
+        return new ResponseEntity<>(errorResponse, exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    private ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception, WebRequest request) {
+        logger.warn("Validation error: {}", exception.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode(), exception.getMessage());
         setRequestDetails(errorResponse, request);

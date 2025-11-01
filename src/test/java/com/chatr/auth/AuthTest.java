@@ -112,6 +112,8 @@ public class AuthTest {
 
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+                System.out.println(response.getBody());
             }
         }
     }

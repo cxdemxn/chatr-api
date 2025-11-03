@@ -1,13 +1,11 @@
 package com.chatr.shared.exceptions.handler;
 
 import com.chatr.shared.exceptions.BaseException;
-import com.chatr.shared.exceptions.ErrorResponse;
+import com.chatr.shared.utils.ErrorResponse;
 import com.chatr.shared.exceptions.UserAlreadyExistsException;
-import com.chatr.shared.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
     private ResponseEntity<ErrorResponse> handleBaseException(BaseException exception, WebRequest request) {
-        logger.warn("Custom exception occurred: {}", exception.getMessage());
+        logger.warn("=+=+=+=+=+=+Custom exception occurred=+=+=+=+=+=+: {}", exception.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode(), exception.getMessage());
         setRequestDetails(errorResponse, request);
@@ -35,7 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     private ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
-        logger.warn("User registration conflict: {}", exception.getMessage());
+        logger.warn("=+=+=+=+=+=+User registration conflict=+=+=+=+=+=+: {}", exception.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode(), exception.getMessage());
         setRequestDetails(errorResponse, request);
@@ -55,7 +53,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException exception, WebRequest request) {
-        logger.warn("Validation error: {}", exception.getMessage());
+        logger.warn("=+=+=+=+=+=+Validation error=+=+=+=+=+=+: {}", exception.getMessage());
 
         Map<String, String> errors = new HashMap<>();
 
@@ -65,7 +63,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("VALIDATION_ERROR", errors);
         setRequestDetails(errorResponse, request);
 
-        System.out.println(errors);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

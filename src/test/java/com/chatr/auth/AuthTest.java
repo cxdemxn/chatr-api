@@ -1,9 +1,10 @@
 package com.chatr.auth;
 
 import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.user.repository.UserRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,16 @@ public class AuthTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    UserRepository userRepository;
+
     private String getRegisterUrl() {
         return "http://localhost:" + port + "/auth/register";
+    }
+
+    @BeforeEach
+    void clearDb() {
+        userRepository.deleteAll();
     }
 
 //    =============================   REGISTER TESTS    ======================================
@@ -38,11 +47,11 @@ public class AuthTest {
         class SuccessTests {
             @Test
             void shouldRegisterUserSuccessfully() {
-                String url = getRegisterUrl();
 
-                AuthRequestDto request = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
+                AuthRequestDto requestDto = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+                        "en");
 
-                ResponseEntity<String> requestResponse = restTemplate.postForEntity(url, request, String.class);
+                ResponseEntity<String> requestResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
 
                 assertThat(requestResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -64,34 +73,29 @@ public class AuthTest {
         class DuplicateTests {
             @Test
 //            @Disabled
-            @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
             void shouldNotRegisterUserWithDuplicateEmail() {
-                String url = getRegisterUrl();
 
                 AuthRequestDto requestDto = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
 
-                ResponseEntity<Void> firstResponse = restTemplate.postForEntity(url, requestDto, Void.class);
+                ResponseEntity<Void> firstResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, Void.class);
                 assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-                ResponseEntity<Void> secondResponse = restTemplate.postForEntity(url, requestDto, Void.class);
+                ResponseEntity<Void> secondResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, Void.class);
                 assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             }
-
             @Test
 //            @Disabled
-            @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
             void shouldNotRegisterUserWithDuplicateUsername() {
-                String url = getRegisterUrl();
 
                 AuthRequestDto firstRequestDto = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
 
-                ResponseEntity<Void> firstResponse = restTemplate.postForEntity(url, firstRequestDto, Void.class);
+                ResponseEntity<Void> firstResponse = restTemplate.postForEntity(getRegisterUrl(), firstRequestDto, Void.class);
                 assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
                 AuthRequestDto secondRequestDto = new AuthRequestDto("cxdemxn", "cxdemon@gmail.com", "cxdemxnPassword21",
                         "en");
 
-                ResponseEntity<Void> secondResponse = restTemplate.postForEntity(url, secondRequestDto, Void.class);
+                ResponseEntity<Void> secondResponse = restTemplate.postForEntity(getRegisterUrl(), secondRequestDto, Void.class);
                 assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             }
         }
@@ -112,8 +116,43 @@ public class AuthTest {
 
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
 
-                System.out.println(response.getBody());
+            @Test
+            void shouldRejectInvalidAndEmptyPreferredLanguage() {
+                AuthRequestDto invalidRequestDto = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com",
+                        "cxdemxnPassword21",
+                        "jp");
+
+                ResponseEntity<String> invalidResponse = restTemplate.postForEntity(getRegisterUrl(), invalidRequestDto,
+                        String.class);
+                assertThat(invalidResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+                AuthRequestDto emptyRequestDto = new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+                        "");
+
+                ResponseEntity<String> emptyResponse = restTemplate.postForEntity(getRegisterUrl(), emptyRequestDto,
+                        String.class);
+                assertThat(emptyResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldRejectUsernameWithSpaces() {
+                AuthRequestDto requestDto = new AuthRequestDto("cxde mxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "gr");
+
+                ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto,
+                        String.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldRejectEmailWithSpaces() {
+                AuthRequestDto requestDto = new AuthRequestDto("cxdemxn", "cxde mxn@gmail.com", "cxdemxnPassword21",
+                        "gr");
+
+                ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto,
+                        String.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
         }
     }

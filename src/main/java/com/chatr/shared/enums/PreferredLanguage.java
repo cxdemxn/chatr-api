@@ -1,20 +1,18 @@
 package com.chatr.shared.enums;
 
-import java.util.prefs.PreferencesFactory;
+import lombok.Getter;
 
+@Getter
 public enum PreferredLanguage {
     ENGLISH("en"),
     SPANISH("es"),
-    FRENCH("fr");
+    FRENCH("fr"),
+    GERMAN("gr");
 
     private final String code;
 
     PreferredLanguage(String code) {
         this.code = code;
-    }
-
-    public String getCode() {
-        return code;
     }
 
     public static PreferredLanguage fromCode(String code) {

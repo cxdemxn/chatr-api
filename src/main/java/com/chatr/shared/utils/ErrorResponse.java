@@ -1,4 +1,4 @@
-package com.chatr.shared.exceptions;
+package com.chatr.shared.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -40,6 +40,8 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         User savedUser = userRepository.save(newUser);
 
+
+
         return userMapper.userToUserDto(savedUser);
     }
 }

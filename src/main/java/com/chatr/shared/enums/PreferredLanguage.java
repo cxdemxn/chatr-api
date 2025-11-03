@@ -17,9 +17,22 @@ public enum PreferredLanguage {
         return code;
     }
 
-//    public static PreferredLanguage fromCode() {
-//        for PreferredLanguage language : values()) {
-//
-//        }
-//    }
+    public static PreferredLanguage fromCode(String code) {
+        for (PreferredLanguage language : values()) {
+            if (language.code.equalsIgnoreCase(code)) {
+                return language;
+            }
+        }
+
+        throw new IllegalArgumentException("Unknown language code: " + code);
+    }
+
+    public static boolean isValid(String code) {
+        for (PreferredLanguage language : values()) {
+            if (language.code.equalsIgnoreCase(code))
+                return true;
+        }
+
+        return false;
+    }
 }

@@ -36,6 +36,10 @@ public class UserDetailsImpl implements UserDetails {
         return user.getId();
     }
 
+    public String getPreferredLanguage() {
+        return user.getPreferredLanguage();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();

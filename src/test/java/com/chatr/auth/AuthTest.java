@@ -2,6 +2,7 @@ package com.chatr.auth;
 
 import com.chatr.auth.dto.LoginRequestDto;
 import com.chatr.auth.dto.RegisterUserDto;
+import com.chatr.user.model.User;
 import com.chatr.user.repository.UserRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -163,9 +165,26 @@ public class AuthTest {
 
     @Nested
     class LoginTests {
+        private User user;
+
+        @BeforeEach
+        void setupUser() {
+            clearDb();
+            RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+                        "en");
+
+            ResponseEntity<String> requestResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
+
+            String username = JsonPath.parse(requestResponse.getBody()).read("$.username");
+
+            user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " +
+                    "not found"));
+
+        }
 
         @Test
         void shouldLoginSuccessfully() {
+
             LoginRequestDto loginRequestDto = new LoginRequestDto("cxdemxn", "cxdemxnPassword21");
 
             ResponseEntity<String> response = restTemplate.postForEntity(getLoginUrl(), loginRequestDto, String.class);
@@ -173,11 +192,36 @@ public class AuthTest {
 
             DocumentContext documentContext = JsonPath.parse(response.getBody());
 
-            Long id = documentContext.read("$.id");
-            assertThat(id).isNotNull().isEqualTo(3);
+            Number id = documentContext.read("$.id");
+            assertThat(id.longValue()).isNotNull().isEqualTo(user.getId());
 
             String username = documentContext.read("$.username");
-            assertThat(username).isEqualTo("cxdemxn");
+            assertThat(username).isEqualTo(user.getUsername());
+
+            String email = documentContext.read("$.email");
+            assertThat(email).isEqualTo(user.getEmail());
+
+            String preferredLanguage = documentContext.read("$.preferredLanguage");
+            assertThat(preferredLanguage).isEqualTo(user.getPreferredLanguage());
+
+            String token = documentContext.read("$.token");
+            assertThat(token).isNotNull().isNotBlank();
+        }
+
+        @Test
+        void shouldNotAuthorizeInvalidUsername() {
+            LoginRequestDto loginRequestDto = new LoginRequestDto("codemon", "cxdemxnPassword21");
+
+            ResponseEntity<String> response = restTemplate.postForEntity(getLoginUrl(), loginRequestDto, String.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        }
+
+        @Test
+        void shouldNotAuthorizeWrongPassword() {
+            LoginRequestDto loginRequestDto = new LoginRequestDto("cxdemxn", "cxdemxnPassword22");
+
+            ResponseEntity<String> response = restTemplate.postForEntity(getLoginUrl(), loginRequestDto, String.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         }
     }
 }

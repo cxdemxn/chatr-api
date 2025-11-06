@@ -41,16 +41,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, exception.getHttpStatus());
     }
 
-//    @ExceptionHandler(ValidationException.class)
-//    private ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception, WebRequest request) {
-//        logger.warn("Validation error: {}", exception.getMessage());
-//
-//        ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode(), exception.getMessage());
-//        setRequestDetails(errorResponse, request);
-//
-//        return new ResponseEntity<>(errorResponse, exception.getHttpStatus());
-//    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException exception, WebRequest request) {
         logger.warn("=+=+=+=+=+=+Validation error=+=+=+=+=+=+: {}", exception.getMessage());

@@ -9,7 +9,7 @@ public record LoginResponseDto(
 
         @NotNull(message = "Id cannot be null")
         @NotBlank(message = "Id cannot be blank")
-        String id,
+        Long id,
 
         @NotNull(message = "Username cannot be null")
         @NoSpace(message = "Username cannot contain spaces")

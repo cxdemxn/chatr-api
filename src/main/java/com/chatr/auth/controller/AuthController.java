@@ -1,6 +1,6 @@
 package com.chatr.auth.controller;
 
-import com.chatr.auth.dto.LoginUserDto;
+import com.chatr.auth.dto.LoginRequestDto;
 import com.chatr.auth.dto.RegisterUserDto;
 import com.chatr.auth.service.AuthService;
 import com.chatr.user.dto.UserDto;
@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    private ResponseEntity<?> login(@Valid @RequestBody LoginUserDto loginRequest) {
+    private ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
         return ResponseEntity.ok("Login successful");
     }
 }

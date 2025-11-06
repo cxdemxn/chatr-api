@@ -1,6 +1,6 @@
 package com.chatr.auth;
 
-import com.chatr.auth.dto.LoginUserDto;
+import com.chatr.auth.dto.LoginRequestDto;
 import com.chatr.auth.dto.RegisterUserDto;
 import com.chatr.user.repository.UserRepository;
 import com.jayway.jsonpath.DocumentContext;
@@ -166,12 +166,18 @@ public class AuthTest {
 
         @Test
         void shouldLoginSuccessfully() {
-            LoginUserDto loginUserDto = new LoginUserDto("cxdemxn", "cxdemxnPassword21");
+            LoginRequestDto loginRequestDto = new LoginRequestDto("cxdemxn", "cxdemxnPassword21");
 
-            ResponseEntity<String> response = restTemplate.postForEntity(getLoginUrl(), loginUserDto, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(getLoginUrl(), loginRequestDto, String.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
 
+            Long id = documentContext.read("$.id");
+            assertThat(id).isNotNull().isEqualTo(3);
+
+            String username = documentContext.read("$.username");
+            assertThat(username).isEqualTo("cxdemxn");
         }
     }
 }

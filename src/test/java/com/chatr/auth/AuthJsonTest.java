@@ -1,6 +1,6 @@
 package com.chatr.auth;
 
-import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.auth.dto.RegisterUserDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthJsonTest {
 
     @Autowired
-    private JacksonTester<AuthRequestDto> json;
+    private JacksonTester<RegisterUserDto> json;
 
     @Test
     public void authJsonDeserializationTest() throws IOException {
@@ -27,7 +27,7 @@ public class AuthJsonTest {
                 }
                 """;
 
-        assertThat(json.parse(expectedUser)).isEqualTo(new AuthRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+        assertThat(json.parse(expectedUser)).isEqualTo(new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
                 "en"));
     }
 }

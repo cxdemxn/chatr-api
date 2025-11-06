@@ -18,6 +18,9 @@ public class JwtUtils {
     @Value("${chatr.api.jwtSecret}")
     private String secretKey;
 
+    @Value("${chatr.api.jwtExpiration}")
+    private String expirationMs;
+
     private SecretKey getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

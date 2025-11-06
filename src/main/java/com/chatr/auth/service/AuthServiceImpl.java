@@ -1,6 +1,6 @@
 package com.chatr.auth.service;
 
-import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.auth.dto.RegisterUserDto;
 import com.chatr.shared.exceptions.UserAlreadyExistsException;
 import com.chatr.shared.mapper.AuthMapper;
 import com.chatr.shared.mapper.UserMapper;
@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDto register(AuthRequestDto requestedUserToRegister) throws UserAlreadyExistsException {
+    public UserDto register(RegisterUserDto requestedUserToRegister) throws UserAlreadyExistsException {
 
         if (userRepository.existsByEmail(requestedUserToRegister.email())) {
             throw new UserAlreadyExistsException("Email already exists");

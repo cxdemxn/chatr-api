@@ -1,9 +1,9 @@
 package com.chatr.auth.service;
 
-import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.auth.dto.RegisterUserDto;
 import com.chatr.shared.exceptions.UserAlreadyExistsException;
 import com.chatr.user.dto.UserDto;
 
 public interface AuthService {
-    UserDto register(AuthRequestDto requestedUserToRegister) throws UserAlreadyExistsException;
+    UserDto register(RegisterUserDto requestedUserToRegister) throws UserAlreadyExistsException;
 }

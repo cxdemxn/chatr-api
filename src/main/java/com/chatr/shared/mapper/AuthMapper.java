@@ -1,19 +1,19 @@
 package com.chatr.shared.mapper;
 
-import com.chatr.auth.dto.AuthRequestDto;
+import com.chatr.auth.dto.RegisterUserDto;
 import com.chatr.user.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthMapper {
 
-    public User authRequestDtoToUser(AuthRequestDto authRequestDto) {
+    public User authRequestDtoToUser(RegisterUserDto registerUserDto) {
         User mappedUser = new User();
 
-        mappedUser.setUsername(authRequestDto.username());
-        mappedUser.setEmail(authRequestDto.email());
-        mappedUser.setPassword(authRequestDto.password());
-        mappedUser.setPreferredLanguage(authRequestDto.preferredLanguage());
+        mappedUser.setUsername(registerUserDto.username());
+        mappedUser.setEmail(registerUserDto.email());
+        mappedUser.setPassword(registerUserDto.password());
+        mappedUser.setPreferredLanguage(registerUserDto.preferredLanguage());
 
         return mappedUser;
     }

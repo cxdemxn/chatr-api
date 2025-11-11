@@ -2,7 +2,7 @@ package com.chatr.auth.controller;
 
 import com.chatr.auth.dto.LoginRequestDto;
 import com.chatr.auth.dto.LoginResponseDto;
-import com.chatr.auth.dto.RegisterUserDto;
+import com.chatr.auth.dto.RegisterRequestDto;
 import com.chatr.auth.service.AuthService;
 import com.chatr.user.dto.UserDto;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    private ResponseEntity<UserDto> register(@Valid @RequestBody RegisterUserDto registerRequest) {
+    private ResponseEntity<UserDto> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         logger.info("register endpoint requested by {}", registerRequest.email());
 
         UserDto savedUser = authService.register(registerRequest);

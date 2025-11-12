@@ -31,22 +31,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwtToken = jwtUtil.parseJwt(request);
-            String username = jwtUtil.extractUsername(jwtToken);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.verifyToken(jwtToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                            null, null);
-                    authentication.setDetails(new WebAuthenticationDetailsSource()
-                            .buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (jwtToken != null) {
+                String username = jwtUtil.extractUsername(jwtToken);
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if (jwtUtil.verifyToken(jwtToken, userDetails)) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                                null, null);
+                        authentication.setDetails(new WebAuthenticationDetailsSource()
+                                .buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e.getMessage());
         }
 
+        System.out.println("We exit the jwt token filter");
         filterChain.doFilter(request, response);
     }
 }

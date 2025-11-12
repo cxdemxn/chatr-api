@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    private void setRequestDetails(ErrorResponse errorResponse, WebRequest request) {
+    public static void setRequestDetails(ErrorResponse errorResponse, WebRequest request) {
         if (request instanceof ServletWebRequest) {
             HttpServletRequest servletRequest = ((ServletWebRequest) request).getRequest();
             errorResponse.setPath(servletRequest.getRequestURI());

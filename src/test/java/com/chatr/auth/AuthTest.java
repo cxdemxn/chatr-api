@@ -1,7 +1,7 @@
 package com.chatr.auth;
 
 import com.chatr.auth.dto.LoginRequestDto;
-import com.chatr.auth.dto.RegisterUserDto;
+import com.chatr.auth.dto.RegisterRequestDto;
 import com.chatr.user.model.User;
 import com.chatr.user.repository.UserRepository;
 import com.jayway.jsonpath.DocumentContext;
@@ -54,7 +54,7 @@ public class AuthTest {
             @Test
             void shouldRegisterUserSuccessfully() {
 
-                RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+                RegisterRequestDto requestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
                         "en");
 
                 ResponseEntity<String> requestResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
@@ -81,7 +81,7 @@ public class AuthTest {
 //            @Disabled
             void shouldNotRegisterUserWithDuplicateEmail() {
 
-                RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
+                RegisterRequestDto requestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
 
                 ResponseEntity<Void> firstResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, Void.class);
                 assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -93,12 +93,12 @@ public class AuthTest {
 //            @Disabled
             void shouldNotRegisterUserWithDuplicateUsername() {
 
-                RegisterUserDto firstRequestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
+                RegisterRequestDto firstRequestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "en");
 
                 ResponseEntity<Void> firstResponse = restTemplate.postForEntity(getRegisterUrl(), firstRequestDto, Void.class);
                 assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-                RegisterUserDto secondRequestDto = new RegisterUserDto("cxdemxn", "cxdemon@gmail.com", "cxdemxnPassword21",
+                RegisterRequestDto secondRequestDto = new RegisterRequestDto("cxdemxn", "cxdemon@gmail.com", "cxdemxnPassword21",
                         "en");
 
                 ResponseEntity<Void> secondResponse = restTemplate.postForEntity(getRegisterUrl(), secondRequestDto, Void.class);
@@ -110,7 +110,7 @@ public class AuthTest {
         class ValidationTests {
             @Test
             void shouldRejectMissingUsername() {
-                RegisterUserDto requestDto = new RegisterUserDto(null, "cxdemxn@gmail.com", "cxdemxnPassword21","en");
+                RegisterRequestDto requestDto = new RegisterRequestDto(null, "cxdemxn@gmail.com", "cxdemxnPassword21","en");
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto,
                         String.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -118,7 +118,7 @@ public class AuthTest {
 
             @Test
             void shouldRejectInvalidEmailFormat() {
-                RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxdemxngmail.com", "cxdemxnPassword21","en");
+                RegisterRequestDto requestDto = new RegisterRequestDto("cxdemxn", "cxdemxngmail.com", "cxdemxnPassword21","en");
 
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -126,7 +126,7 @@ public class AuthTest {
 
             @Test
             void shouldRejectInvalidAndEmptyPreferredLanguage() {
-                RegisterUserDto invalidRequestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com",
+                RegisterRequestDto invalidRequestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com",
                         "cxdemxnPassword21",
                         "jp");
 
@@ -134,7 +134,7 @@ public class AuthTest {
                         String.class);
                 assertThat(invalidResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
-                RegisterUserDto emptyRequestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+                RegisterRequestDto emptyRequestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
                         "");
 
                 ResponseEntity<String> emptyResponse = restTemplate.postForEntity(getRegisterUrl(), emptyRequestDto,
@@ -144,7 +144,7 @@ public class AuthTest {
 
             @Test
             void shouldRejectUsernameWithSpaces() {
-                RegisterUserDto requestDto = new RegisterUserDto("cxde mxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "gr");
+                RegisterRequestDto requestDto = new RegisterRequestDto("cxde mxn", "cxdemxn@gmail.com", "cxdemxnPassword21", "gr");
 
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto,
                         String.class);
@@ -153,7 +153,7 @@ public class AuthTest {
 
             @Test
             void shouldRejectEmailWithSpaces() {
-                RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxde mxn@gmail.com", "cxdemxnPassword21",
+                RegisterRequestDto requestDto = new RegisterRequestDto("cxdemxn", "cxde mxn@gmail.com", "cxdemxnPassword21",
                         "gr");
 
                 ResponseEntity<String> response = restTemplate.postForEntity(getRegisterUrl(), requestDto,
@@ -170,7 +170,7 @@ public class AuthTest {
         @BeforeEach
         void setupUser() {
             clearDb();
-            RegisterUserDto requestDto = new RegisterUserDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
+            RegisterRequestDto requestDto = new RegisterRequestDto("cxdemxn", "cxdemxn@gmail.com", "cxdemxnPassword21",
                         "en");
 
             ResponseEntity<String> requestResponse = restTemplate.postForEntity(getRegisterUrl(), requestDto, String.class);

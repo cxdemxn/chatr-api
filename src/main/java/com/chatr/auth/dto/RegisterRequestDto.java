@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record RegisterUserDto(
+public record RegisterRequestDto(
         @NotNull(message = "Username cannot be null")
         @NoSpace(message = "Username cannot contain spaces")
         @NotBlank(message = "Username cannot be blank")

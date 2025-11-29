@@ -1,14 +1,15 @@
 package com.chatr.message.model;
 
-import com.chatr.shared.enums.PreferredLanguage;
 import com.chatr.shared.model.BaseEntity;
 import com.chatr.user.model.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Message extends BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -19,13 +20,7 @@ public class Message extends BaseEntity {
 
     private String originalText;
     private String translatedText;
-
-    @Enumerated(EnumType.STRING)
-    private PreferredLanguage sourceLanguage;
-
-    @Enumerated(EnumType.STRING)
-    private PreferredLanguage targetLanguage;
-
-    private boolean read;
+    private String languageFrom;
+    private String languageTo;
+    private LocalDateTime timestamp;
 }
-

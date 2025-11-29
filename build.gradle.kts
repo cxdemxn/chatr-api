@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("com.openai:openai-java:4.8.0")
 }
 
 tasks.withType<Test> {

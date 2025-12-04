@@ -7,7 +7,13 @@ public enum PreferredLanguage {
     ENGLISH("en"),
     SPANISH("es"),
     FRENCH("fr"),
-    GERMAN("gr");
+    GERMAN("de"),
+    ARABIC("ar"),
+    ITALIAN("it"),
+    JAPANESE("ja"),
+    KOREAN("ko"),
+    RUSSIAN("ru")
+    ;
 
     private final String code;
 
